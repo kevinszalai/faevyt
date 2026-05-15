@@ -91,18 +91,12 @@
             border: 2px solid var(--border);
             border-radius: 6px;
             padding: 15px;
-            cursor: pointer;
             transition: all 0.2s ease;
             background: white;
-            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-        }
-
-        .card:hover {
-            border-color: #aaa;
-            transform: translateY(-2px);
+            position: relative;
         }
 
         .card.selected {
@@ -110,12 +104,36 @@
             background-color: #f0f7ff;
         }
 
-        .card input[type="checkbox"] {
+        .quantity-selector {
             position: absolute;
             top: 15px;
             right: 15px;
-            transform: scale(1.3);
             z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .quantity-selector select {
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 2px 5px;
+        }
+
+        .qty-label {
+            font-size: 11px;
+            color: #666;
+            font-weight: 600;
+            padding-left: 5px;
         }
 
         .img-container {
@@ -141,7 +159,7 @@
             font-weight: bold;
             font-size: 15px;
             margin-bottom: 5px;
-            padding-right: 25px;
+            padding-right: 65px; /* Espacio para el selector */
         }
 
         .card-desc {
@@ -209,15 +227,6 @@
             text-align: right;
             margin-top: 5px;
         }
-
-        .footer-info {
-            font-size: 11px;
-            color: #777;
-            margin-top: 20px;
-            background: #e9ecef;
-            padding: 10px;
-            border-radius: 4px;
-        }
     </style>
 </head>
 <body>
@@ -232,55 +241,100 @@
     <div class="main-content">
         
         <h3 class="section-title">1. Estructura Técnica (Opciones de Montaje)</h3>
-        <p style="font-size: 13px; color: #666; margin-top: -10px;">Seleccione la estructura física que prefiera para el stand:</p>
+        <p style="font-size: 13px; color: #666; margin-top: -10px;">Indique la cantidad requerida para cada tipo de estructura:</p>
         <div class="grid-options">
-            <div class="card" onclick="toggleCheckbox('porticoA')">
-                <input type="checkbox" id="porticoA" value="3800">
+            <div class="card" id="card-porticoA">
+                <div class="quantity-selector">
+                    <span class="qty-label">Cant:</span>
+                    <select id="porticoA" onchange="updateQuantity('porticoA')">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
                 <div class="img-container">
                     <img src="portico_a.jpg" alt="Opción A · Pórtico 360°" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo portico_a.jpg en GitHub';">
                 </div>
                 <div class="card-title">Opción A — Pórtico 360°</div>
                 <div class="card-desc">Experiencia inmersiva de entrada. Máximo impacto visual y de marca desde el primer contacto con el congresista.</div>
-                <div class="card-price">USD 3.800 <small>+ IVA</small></div>
+                <div class="card-price">USD 3.800 <small>+ IVA u.</small></div>
             </div>
-            <div class="card" onclick="toggleCheckbox('porticoB')">
-                <input type="checkbox" id="porticoB" value="2800">
+            <div class="card" id="card-porticoB">
+                <div class="quantity-selector">
+                    <span class="qty-label">Cant:</span>
+                    <select id="porticoB" onchange="updateQuantity('porticoB')">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
                 <div class="img-container">
                     <img src="portico_b.jpg" alt="Opción B · Pórtico 1 cara" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo portico_b.jpg en GitHub';">
                 </div>
                 <div class="card-title">Opción B — Pórtico 1 cara</div>
                 <div class="card-desc">Branding de entrada frontal. Buena visibilidad con menor inversión en estructura.</div>
-                <div class="card-price">USD 2.800 <small>+ IVA</small></div>
+                <div class="card-price">USD 2.800 <small>+ IVA u.</small></div>
             </div>
         </div>
 
         <h3 class="section-title">2. Pantallas • Opciones de Visualización</h3>
-        <p style="font-size: 13px; color: #666; margin-top: -10px;">Puede seleccionar una, ambas opciones o ninguna:</p>
+        <p style="font-size: 13px; color: #666; margin-top: -10px;">Indique la cantidad de pantallas que desea incorporar:</p>
         <div class="grid-options">
-            <div class="card" onclick="toggleCheckbox('pantallaCurva')">
-                <input type="checkbox" id="pantallaCurva" value="2200">
+            <div class="card" id="card-pantallaCurva">
+                <div class="quantity-selector">
+                    <span class="qty-label">Cant:</span>
+                    <select id="pantallaCurva" onchange="updateQuantity('pantallaCurva')">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
                 <div class="img-container">
                     <img src="pantalla_curva.jpg" alt="Opción 1 · Pantalla Curva" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo pantalla_curva.jpg en GitHub';">
                 </div>
                 <div class="card-title">Opción 1 — Pantalla Curva</div>
                 <div class="card-desc">Pantalla LED curva de 4 × 2,5 metros con resolución 1024 × 640 px. Alto impacto visual, ideal para contenido institucional.</div>
-                <div class="card-price">USD 2.200 <small>+ IVA</small></div>
+                <div class="card-price">USD 2.200 <small>+ IVA u.</small></div>
             </div>
-            <div class="card" onclick="toggleCheckbox('totemsVis')">
-                <input type="checkbox" id="totemsVis" value="1900">
+            <div class="card" id="card-totemsVis">
+                <div class="quantity-selector">
+                    <span class="qty-label">Cant:</span>
+                    <select id="totemsVis" onchange="updateQuantity('totemsVis')">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
                 <div class="img-container">
                     <img src="totems.jpg" alt="Opción 2 · 2 Tótems 1 Cara" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo totems.jpg en GitHub';">
                 </div>
-                <div class="card-title">Opción 2 — 2 Tótems 1 Cara</div>
-                <div class="card-desc">Dos pantallas independientes distribuidas en el espacio. Mayor flexibilidad para mostrar contenido diferenciado.</div>
-                <div class="card-price">USD 1.900 <small>+ IVA</small></div>
+                <div class="card-title">Opción 2 — Tótems 1 Cara (Par)</div>
+                <div class="card-desc">Set de tótems de visualización independientes distribuidos en el espacio para reproducir contenidos dinámicos.</div>
+                <div class="card-price">USD 1.900 <small>+ IVA u.</small></div>
             </div>
         </div>
 
         <h3 class="section-title">3. Tótem de Carga (Complemento Opcional)</h3>
         <div class="grid-options" style="grid-template-columns: 1fr;">
-            <div class="card" onclick="toggleCheckbox('totemCarga')" style="flex-direction: row; gap: 20px; align-items: center; min-height: 120px;">
-                <input type="checkbox" id="totemCarga" value="600">
+            <div class="card" id="card-totemCarga" style="flex-direction: row; gap: 20px; align-items: center; min-height: 120px;">
+                <div class="quantity-selector" style="top: 15px; right: 15px;">
+                    <span class="qty-label">Cant:</span>
+                    <select id="totemCarga" onchange="updateQuantity('totemCarga')">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
                 <div class="img-container" style="width: 160px; height: 160px; margin-bottom: 0; flex-shrink: 0;">
                     <img src="totem_carga.jpg" alt="Tótem de Carga con Lockers" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo totem_carga.jpg';">
                 </div>
@@ -296,8 +350,17 @@
 
         <h3 class="section-title">4. Gastronomía</h3>
         <div class="grid-options" style="grid-template-columns: 1fr;">
-            <div class="card" onclick="toggleCheckbox('gastronomia')" style="flex-direction: row; gap: 20px; align-items: center;">
-                <input type="checkbox" id="gastronomia" value="4000">
+            <div class="card" id="card-gastronomia" style="flex-direction: row; gap: 20px; align-items: center;">
+                <div class="quantity-selector" style="top: 15px; right: 15px;">
+                    <span class="qty-label">Cant:</span>
+                    <select id="gastronomia" onchange="updateQuantity('gastronomia')">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
                 <div class="img-container" style="width: 160px; height: 220px; margin-bottom: 0; flex-shrink: 0;">
                     <img src="gastronomia.jpg" alt="Servicio de Coffee Break" class="card-img" onerror="this.parentNode.style.background='#f1f3f5'; this.parentNode.innerText='Coffee Break'; this.parentNode.style.fontSize='12px';">
                 </div>
@@ -314,15 +377,24 @@
                             <li><strong>Soporte continuo:</strong> Dispenser de agua frío/calor operativo de 10 a 19 hs.</li>
                         </ul>
                     </div>
-                    <div class="card-price" style="border: none; padding: 0; margin-top: 5px;">USD 4.000 <small>+ IVA total estimado</small></div>
+                    <div class="card-price" style="border: none; padding: 0; margin-top: 5px;">USD 4.000 <small>+ IVA por módulo completo</small></div>
                 </div>
             </div>
         </div>
 
         <h3 class="section-title">5. Mobiliario, Personal y Coordinación</h3>
         <div class="grid-options" style="grid-template-columns: 1fr;">
-            <div class="card" onclick="toggleCheckbox('mobiliario')" style="flex-direction: row; gap: 20px; align-items: center; min-height: 120px;">
-                <input type="checkbox" id="mobiliario" value="1800">
+            <div class="card" id="card-mobiliario" style="flex-direction: row; gap: 20px; align-items: center; min-height: 120px;">
+                <div class="quantity-selector" style="top: 15px; right: 15px;">
+                    <span class="qty-label">Cant:</span>
+                    <select id="mobiliario" onchange="updateQuantity('mobiliario')">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
                 <div class="img-container" style="width: 160px; height: 160px; margin-bottom: 0; flex-shrink: 0;">
                     <img src="mobiliario.jpg" alt="Mobiliario y Staff" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo mobiliario.jpg';">
                 </div>
@@ -349,39 +421,31 @@
             <div style="font-weight: bold; color: #2c3e50;">TOTAL (S/ IVA):</div>
             <div class="total-amount" id="total-general">USD 0</div>
         </div>
-
-        <div class="footer-info">
-            <strong>Aclaraciones comerciales:</strong><br>
-            • Valores en USD. Pago en ARS al tipo de cambio oficial vendedor del Banco Nación del día de pago.<br>
-            • Facturación tipo A corporativa. Basado en 100 pax por día.
-        </div>
     </div>
 </div>
 
 <script>
     let selecciones = {
-        porticoA: { activo: false, precio: 3800, nombre: "Pórtico 360°" },
-        porticoB: { activo: false, precio: 2800, nombre: "Pórtico 1 cara" },
-        pantallaCurva: { activo: false, precio: 2200, nombre: "Pantalla Curva" },
-        totemsVis: { activo: false, precio: 1900, nombre: "2 Tótems 1 Cara" },
-        totemCarga: { activo: false, precio: 600, nombre: "Tótem de Carga" },
-        gastronomia: { activo: false, precio: 4000, nombre: "Gastronomía (Coffee Break)" },
-        mobiliario: { activo: false, precio: 1800, nombre: "Mobiliario y Staff" }
+        porticoA: { cantidad: 0, precio: 3800, nombre: "Pórtico 360°" },
+        porticoB: { cantidad: 0, precio: 2800, nombre: "Pórtico 1 cara" },
+        pantallaCurva: { cantidad: 0, precio: 2200, nombre: "Pantalla Curva" },
+        totemsVis: { cantidad: 0, precio: 1900, nombre: "Tótems 1 Cara (Par)" },
+        totemCarga: { cantidad: 0, precio: 600, nombre: "Tótem de Carga" },
+        gastronomia: { cantidad: 0, precio: 4000, nombre: "Gastronomía (Coffee Break)" },
+        mobiliario: { cantidad: 0, precio: 1800, nombre: "Mobiliario y Staff" }
     };
 
-    function toggleCheckbox(id) {
-        const input = document.getElementById(id);
+    function updateQuantity(id) {
+        const select = document.getElementById(id);
+        const cantidad = parseInt(select.value);
         
-        if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'A' && event.target.tagName !== 'LI' && event.target.tagName !== 'STRONG') {
-            input.checked = !input.checked;
-        }
+        selecciones[id].cantidad = cantidad;
 
-        selecciones[id].activo = input.checked;
-
-        if (input.checked) {
-            input.closest('.card').classList.add('selected');
+        const card = document.getElementById('card-' + id);
+        if (cantidad > 0) {
+            card.classList.add('selected');
         } else {
-            input.closest('.card').classList.remove('selected');
+            card.classList.remove('selected');
         }
 
         calcularTotal();
@@ -393,9 +457,15 @@
         let tieneElementos = false;
 
         for (let llave in selecciones) {
-            if (selecciones[llave].activo) {
-                total += selecciones[llave].precio;
-                htmlDesglose += `<div class="summary-item"><span>${selecciones[llave].nombre}:</span><span>USD ${selecciones[llave].precio.toLocaleString('en-US')}</span></div>`;
+            let item = selecciones[llave];
+            if (item.cantidad > 0) {
+                let subtotal = item.cantidad * item.precio;
+                total += subtotal;
+                htmlDesglose += `
+                    <div class="summary-item">
+                        <span>${item.nombre} (x${item.cantidad}):</span>
+                        <span>USD ${subtotal.toLocaleString('en-US')}</span>
+                    </div>`;
                 tieneElementos = true;
             }
         }
