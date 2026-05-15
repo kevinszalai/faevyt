@@ -121,6 +121,12 @@
             cursor: pointer;
         }
 
+        /* Variación del selector para cuando hay combo de tipo + cantidad */
+        .quantity-selector.extended {
+            padding: 4px 6px;
+            gap: 3px;
+        }
+
         .checkbox-container input[type="checkbox"] {
             transform: scale(1.4);
             margin: 0;
@@ -130,18 +136,19 @@
         .quantity-selector select {
             border: none;
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             color: var(--primary);
             cursor: pointer;
-            padding: 2px 5px;
+            padding: 2px 2px;
+            background: transparent;
         }
 
         .qty-label {
             font-size: 11px;
             color: #666;
             font-weight: 600;
-            padding-left: 5px;
+            padding-left: 2px;
             user-select: none;
         }
 
@@ -173,24 +180,16 @@
             padding-right: 85px;
         }
 
+        /* Espacio extra en el título de tótems porque su selector es más ancho */
+        #title-totemsVis {
+            padding-right: 145px;
+        }
+
         .card-desc {
             font-size: 13px;
             color: #666;
             margin-bottom: 15px;
             flex-grow: 1;
-        }
-
-        .totem-alert {
-            display: none;
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 8px;
-            text-align: center;
         }
 
         /* Estilos para inputs editables */
@@ -350,7 +349,6 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.2);
         }
 
-        /* Contenedor oculto exclusivo para el diseño del PDF impreso */
         #print-section {
             display: none;
         }
@@ -404,7 +402,6 @@
                 vertical-align: top;
             }
             
-            /* Nuevos estilos para incluir fotos miniatura controladas en el PDF */
             .print-img-col {
                 width: 90px;
                 text-align: center;
@@ -539,8 +536,13 @@
                 <div class="card-desc" id="desc-pantallaCurva">Pantalla LED curva de 4 × 2,5 metros con resolución 1024 × 640 px. Alto impacto visual, ideal para contenido institucional.</div>
                 <div class="card-price">USD 2.200 <small>+ IVA u.</small></div>
             </div>
+            
             <div class="card" id="card-totemsVis">
-                <div class="quantity-selector">
+                <div class="quantity-selector extended">
+                    <select id="totemsTipo" onchange="cambiarModalidadTotem()">
+                        <option value="unidad">Unidad</option>
+                        <option value="set">Set (Par)</option>
+                    </select>
                     <span class="qty-label">Cant:</span>
                     <select id="totemsVis" onchange="updateQuantity('totemsVis')">
                         <option value="0">0</option>
@@ -548,15 +550,15 @@
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
+                        <option value="5">5</option>
                     </select>
                 </div>
                 <div class="img-container" ondblclick="zoomImage('totems.jpg')">
-                    <img src="totems.jpg" alt="Opción 2 · 2 Tótems 1 Cara" class="card-img" id="img-src-totemsVis" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo totems.jpg en GitHub';">
+                    <img src="totems.jpg" alt="Opción 2 · Tótems" class="card-img" id="img-src-totemsVis" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo totems.jpg en GitHub';">
                 </div>
-                <div class="card-title" id="title-totemsVis">Opción 2 — Tótems 1 Cara (Par)</div>
-                <div class="card-desc" id="desc-totemsVis">Set de tótems de visualización independientes distribuidos en el espacio para reproducir contenidos dinámicos.</div>
-                <div id="alert-totems" class="totem-alert">⚠️ El valor es por dos unidades.</div>
-                <div class="card-price">USD 1.900 <small>+ IVA u.</small></div>
+                <div class="card-title" id="title-totemsVis">Opción 2 — Tótems de Visualización</div>
+                <div class="card-desc" id="desc-totemsVis">Estructuras independientes distribuidas en el espacio para reproducir contenidos dinámicos e institucionales de manera coordinada.</div>
+                <div class="card-price" id="price-label-totems">USD 950 <small>+ IVA u.</small></div>
             </div>
         </div>
 
@@ -695,7 +697,7 @@ Incluye personal de servicio para hospitalidad y coordinador/a de evento a cargo
         porticoA: { cantidad: 0, precio: 3800, nombre: "Pórtico 360°" },
         porticoB: { cantidad: 0, precio: 2800, nombre: "Pórtico 1 cara" },
         pantallaCurva: { cantidad: 0, precio: 2200, nombre: "Pantalla Curva" },
-        totemsVis: { cantidad: 0, precio: 1900, nombre: "Tótems 1 Cara (Par)" },
+        totemsVis: { cantidad: 0, precio: 950, nombre: "Tótems de Visualización (Unidad)", esTotem: true },
         totemCarga: { cantidad: 0, precio: 600, nombre: "Tótem de Carga" }
     };
 
@@ -716,16 +718,52 @@ Incluye personal de servicio para hospitalidad y coordinador/a de evento a cargo
         viewer.classList.remove('show');
     }
 
+    // Nueva función para alternar rangos y precios en tótems
+    function cambiarModalidadTotem() {
+        const tipo = document.getElementById('totemsTipo').value;
+        const selectCant = document.getElementById('totemsVis');
+        const labelPrecio = document.getElementById('price-label-totems');
+        
+        // Guardamos el valor seleccionado antes de reconstruir para ver si encaja
+        const antiguoValor = parseInt(selectCant.value);
+        
+        selectCant.innerHTML = '<option value="0">0</option>';
+        
+        if (tipo === 'unidad') {
+            seleccionesCantidad.totemsVis.precio = 950;
+            seleccionesCantidad.totemsVis.nombre = "Tótems de Visualización (Unidad)";
+            labelPrecio.innerHTML = 'USD 950 <small>+ IVA u.</small>';
+            
+            // Llenar rango de 1 a 5
+            for (let i = 1; i <= 5; i++) {
+                selectCant.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+        } else {
+            seleccionesCantidad.totemsVis.precio = 1900;
+            seleccionesCantidad.totemsVis.nombre = "Tótems de Visualización (Set x2)";
+            labelPrecio.innerHTML = 'USD 1.900 <small>+ IVA set</small>';
+            
+            // Llenar rango de 2 a 8
+            for (let i = 2; i <= 8; i++) {
+                selectCant.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+        }
+        
+        // Intentar restablecer el valor previo si existe en el nuevo rango, sino a 0
+        if (antiguoValor > 0 && selectCant.querySelector(`option[value="${antiguoValor}"]`)) {
+            selectCant.value = antiguoValor;
+        } else {
+            selectCant.value = "0";
+        }
+        
+        updateQuantity('totemsVis');
+    }
+
     function updateQuantity(id) {
         const select = document.getElementById(id);
         const cantidad = parseInt(select.value);
         
         seleccionesCantidad[id].cantidad = cantidad;
-
-        if (id === 'totemsVis') {
-            const alertBox = document.getElementById('alert-totems');
-            alertBox.style.display = cantidad > 0 ? 'block' : 'none';
-        }
 
         const card = document.getElementById('card-' + id);
         if (cantidad > 0) {
@@ -771,9 +809,17 @@ Incluye personal de servicio para hospitalidad y coordinador/a de evento a cargo
             if (item.cantidad > 0) {
                 let subtotal = item.cantidad * item.precio;
                 total += subtotal;
+                
+                // Texto bonito para el desglose lateral
+                let visualNombre = item.nombre;
+                if (item.esTotem) {
+                    const tipo = document.getElementById('totemsTipo').value;
+                    visualNombre = tipo === 'unidad' ? `Tótems (Unidades)` : `Tótems (Sets x2)`;
+                }
+
                 htmlDesglose += `
                     <div class="summary-item">
-                        <span>${item.nombre} (x${item.cantidad}):</span>
+                        <span>${visualNombre} (x${item.cantidad}):</span>
                         <span>USD ${subtotal.toLocaleString('en-US')}</span>
                     </div>`;
                 tieneElementos = true;
@@ -821,9 +867,10 @@ Incluye personal de servicio para hospitalidad y coordinador/a de evento a cargo
                 let descElement = document.getElementById('desc-' + llave);
                 let descTexto = descElement ? descElement.innerText : '';
                 
-                // Buscamos la ruta real de la imagen asignada a esa card
                 let imgElement = document.getElementById('img-src-' + llave);
                 let imgUrl = imgElement ? imgElement.src : '';
+
+                let nombreImpresion = item.nombre;
 
                 tbody.innerHTML += `
                     <tr>
@@ -831,7 +878,7 @@ Incluye personal de servicio para hospitalidad y coordinador/a de evento a cargo
                             <img src="${imgUrl}" class="print-pdf-thumb" alt="">
                         </td>
                         <td>
-                            <div class="print-item-title">${item.nombre}</div>
+                            <div class="print-item-title">${nombreImpresion}</div>
                             <div class="print-item-desc">${descTexto}</div>
                         </td>
                         <td style="text-align: center; font-weight: bold; vertical-align: middle;">${item.cantidad}</td>
