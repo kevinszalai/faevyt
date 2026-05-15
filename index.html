@@ -167,6 +167,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            cursor: zoom-in;
+            user-select: none;
         }
 
         .card-title {
@@ -183,11 +185,40 @@
             flex-grow: 1;
         }
 
-        .menu-list {
-            font-size: 12px;
-            color: #555;
-            margin: 8px 0;
-            padding-left: 18px;
+        .editable-title {
+            font-weight: bold;
+            font-size: 15px;
+            color: #333;
+            border: 1px dashed transparent;
+            background: transparent;
+            width: 80%;
+            margin-bottom: 5px;
+            padding: 2px;
+            font-family: inherit;
+        }
+
+        .editable-title:hover, .editable-text:hover {
+            border-color: #aaa;
+            background: #fff;
+        }
+
+        .editable-title:focus, .editable-text:focus {
+            border-color: var(--primary);
+            background: #fff;
+            outline: none;
+        }
+
+        .editable-text {
+            font-size: 13px;
+            color: #666;
+            border: 1px dashed transparent;
+            background: transparent;
+            width: 95%;
+            height: 180px;
+            resize: none;
+            font-family: inherit;
+            line-height: 1.5;
+            padding: 5px;
         }
 
         .card-price {
@@ -241,6 +272,42 @@
             text-align: right;
             margin-top: 5px;
         }
+
+        /* Estilos del visor de imágenes (Zoom Lightbox) */
+        .zoom-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .zoom-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .zoom-img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .zoom-overlay.show .zoom-img {
+            transform: scale(1);
+        }
     </style>
 </head>
 <body>
@@ -255,7 +322,7 @@
     <div class="main-content">
         
         <h3 class="section-title">1. Estructura Técnica (Opciones de Montaje)</h3>
-        <p style="font-size: 13px; color: #666; margin-top: -10px;">Indique la cantidad requerida para cada tipo de estructura:</p>
+        <p style="font-size: 13px; color: #666; margin-top: -10px;">Indique la cantidad requerida para cada tipo de estructura (Doble clic en la foto para ampliar):</p>
         <div class="grid-options">
             <div class="card" id="card-porticoA">
                 <div class="quantity-selector">
@@ -269,7 +336,7 @@
                     </select>
                 </div>
                 <div class="img-container">
-                    <img src="portico_a.jpg" alt="Opción A · Pórtico 360°" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo portico_a.jpg en GitHub';">
+                    <img src="portico_a.jpg" alt="Opción A · Pórtico 360°" class="card-img" ondblclick="zoomImage(this)" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo portico_a.jpg en GitHub';">
                 </div>
                 <div class="card-title">Opción A — Pórtico 360°</div>
                 <div class="card-desc">Experiencia inmersiva de entrada. Máximo impacto visual y de marca desde el primer contacto con el congresista.</div>
@@ -287,7 +354,7 @@
                     </select>
                 </div>
                 <div class="img-container">
-                    <img src="portico_b.jpg" alt="Opción B · Pórtico 1 cara" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo portico_b.jpg en GitHub';">
+                    <img src="portico_b.jpg" alt="Opción B · Pórtico 1 cara" class="card-img" ondblclick="zoomImage(this)" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo portico_b.jpg en GitHub';">
                 </div>
                 <div class="card-title">Opción B — Pórtico 1 cara</div>
                 <div class="card-desc">Branding de entrada frontal. Buena visibilidad con menor inversión en estructura.</div>
@@ -296,7 +363,7 @@
         </div>
 
         <h3 class="section-title">2. Pantallas • Opciones de Visualización</h3>
-        <p style="font-size: 13px; color: #666; margin-top: -10px;">Indique la cantidad de pantallas que desea incorporar:</p>
+        <p style="font-size: 13px; color: #666; margin-top: -10px;">Indique la cantidad de pantallas que desea incorporar (Doble clic en la foto para ampliar):</p>
         <div class="grid-options">
             <div class="card" id="card-pantallaCurva">
                 <div class="quantity-selector">
@@ -310,7 +377,7 @@
                     </select>
                 </div>
                 <div class="img-container">
-                    <img src="pantalla_curva.jpg" alt="Opción 1 · Pantalla Curva" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo pantalla_curva.jpg en GitHub';">
+                    <img src="pantalla_curva.jpg" alt="Opción 1 · Pantalla Curva" class="card-img" ondblclick="zoomImage(this)" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo pantalla_curva.jpg en GitHub';">
                 </div>
                 <div class="card-title">Opción 1 — Pantalla Curva</div>
                 <div class="card-desc">Pantalla LED curva de 4 × 2,5 metros con resolución 1024 × 640 px. Alto impacto visual, ideal para contenido institucional.</div>
@@ -328,7 +395,7 @@
                     </select>
                 </div>
                 <div class="img-container">
-                    <img src="totems.jpg" alt="Opción 2 · 2 Tótems 1 Cara" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo totems.jpg en GitHub';">
+                    <img src="totems.jpg" alt="Opción 2 · 2 Tótems 1 Cara" class="card-img" ondblclick="zoomImage(this)" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo totems.jpg en GitHub';">
                 </div>
                 <div class="card-title">Opción 2 — Tótems 1 Cara (Par)</div>
                 <div class="card-desc">Set de tótems de visualización independientes distribuidos en el espacio para reproducir contenidos dinámicos.</div>
@@ -350,7 +417,7 @@
                     </select>
                 </div>
                 <div class="img-container" style="width: 160px; height: 160px; margin-bottom: 0; flex-shrink: 0;">
-                    <img src="totem_carga.jpg" alt="Tótem de Carga con Lockers" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo totem_carga.jpg';">
+                    <img src="totem_carga.jpg" alt="Tótem de Carga con Lockers" class="card-img" ondblclick="zoomImage(this)" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo totem_carga.jpg';">
                 </div>
                 <div style="flex-grow: 1;">
                     <div class="card-title">Tótem de Carga con Lockers</div>
@@ -366,22 +433,17 @@
         <div class="grid-options" style="grid-template-columns: 1fr;">
             <div class="card clickable" id="card-gastronomia" onclick="toggleCheckbox('gastronomia')" style="flex-direction: row; gap: 20px; align-items: center;">
                 <input type="checkbox" id="gastronomia" onchange="calcularTotal()">
-                <div class="img-container" style="width: 160px; height: 220px; margin-bottom: 0; flex-shrink: 0;">
-                    <img src="gastronomia.jpg" alt="Servicio de Coffee Break" class="card-img" onerror="this.parentNode.style.background='#f1f3f5'; this.parentNode.innerText='Coffee Break'; this.parentNode.style.fontSize='12px';">
+                <div class="img-container" style="width: 160px; height: 240px; margin-bottom: 0; flex-shrink: 0;">
+                    <img src="gastronomia.jpg" alt="Servicio de Coffee Break" class="card-img" ondblclick="zoomImage(this); event.stopPropagation();" onerror="this.parentNode.style.background='#f1f3f5'; this.parentNode.innerText='Coffee Break'; this.parentNode.style.fontSize='12px';">
                 </div>
-                <div style="flex-grow: 1;">
-                    <div class="card-title">Servicio de Coffee Break (100 pax × 2 días)</div>
-                    <div class="card-desc" style="margin-bottom: 5px;">
-                        Servicio premium de 3 horas por día. Incluye vajilla de vidrio, porcelana y camareros a disposición:
-                        <ul class="menu-list">
-                            <li><strong>Pastelería:</strong> Mini alfajorcitos de maicena y de chocolate, mini palmeritas y mini porciones de brownie.</li>
-                            <li><strong>Variedad:</strong> Muffins y mini panificados de jamón natural y queso.</li>
-                            <li><strong>Frutas:</strong> Mini porción de ensalada de frutas.</li>
-                            <li><strong>Infusiones:</strong> Café en cápsula (latte, cortado y expreso - 200 unidades).</li>
-                            <li><strong>Bebidas Frías:</strong> Agua mineral, jugo de naranja y dispenser con aguas saborizadas.</li>
-                            <li><strong>Soporte continuo:</strong> Dispenser de agua frío/calor operativo de 10 a 19 hs.</li>
-                        </ul>
-                    </div>
+                <div style="flex-grow: 1; z-index: 20;" onclick="event.stopPropagation();">
+                    <input type="text" id="title-gastronomia" class="editable-title" value="Servicio de Coffee Break (100 pax × 2 días)" oninput="updateName('gastronomia')">
+                    <textarea id="text-gastronomia" class="editable-text" oninput="calcularTotal()">• Pastelería: Mini alfajorcitos de maicena/chocolate, mini palmeritas y mini brownies.
+• Variedad: Muffins y mini panificados de jamón natural y queso.
+• Frutas: Mini porciones de ensalada de frutas.
+• Infusiones: Café en cápsula (latte, cortado y expreso - 200 u.).
+• Bebidas Frías: Agua mineral, jugo de naranja y dispenser con aguas saborizadas.
+• Soporte: Dispenser de agua frío/calor de 10 a 19 hs, vajilla y camareros.</textarea>
                     <div class="card-price" style="border: none; padding: 0; margin-top: 5px;">USD 4.000 <small>+ IVA total estimado</small></div>
                 </div>
             </div>
@@ -391,14 +453,14 @@
         <div class="grid-options" style="grid-template-columns: 1fr;">
             <div class="card clickable" id="card-mobiliario" onclick="toggleCheckbox('mobiliario')" style="flex-direction: row; gap: 20px; align-items: center; min-height: 120px;">
                 <input type="checkbox" id="mobiliario" onchange="calcularTotal()">
-                <div class="img-container" style="width: 160px; height: 160px; margin-bottom: 0; flex-shrink: 0;">
-                    <img src="mobiliario.jpg" alt="Mobiliario y Staff" class="card-img" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo mobiliario.jpg';">
+                <div class="img-container" style="width: 160px; height: 240px; margin-bottom: 0; flex-shrink: 0;">
+                    <img src="mobiliario.jpg" alt="Mobiliario y Staff" class="card-img" ondblclick="zoomImage(this); event.stopPropagation();" onerror="this.parentNode.style.background='#ffe3e3'; this.parentNode.innerText='Falta archivo mobiliario.jpg';">
                 </div>
-                <div style="flex-grow: 1;">
-                    <div class="card-title">Infraestructura, Mobiliario y Staff de Servicio</div>
-                    <div class="card-desc" style="margin-bottom: 5px;">
-                        Mesas altas con banquetas, centro floral y postes ordenadores. Incluye 4 mesas y banquetas altas para 4 personas cada una, mesón de apoyo para el servicio gastronómico, centro de mesa floral y 4 unidades de postes ordenadores de 2 metros en color negro. Incluye personal de servicio, hospitalidad y coordinador/a de evento a cargo del espacio.
-                    </div>
+                <div style="flex-grow: 1; z-index: 20;" onclick="event.stopPropagation();">
+                    <input type="text" id="title-mobiliario" class="editable-title" value="Infraestructura, Mobiliario y Staff de Servicio" oninput="updateName('mobiliario')">
+                    <textarea id="text-mobiliario" class="editable-text" oninput="calcularTotal()">Mesas altas con banquetas, centro floral y postes ordenadores. 
+Incluye 4 mesas y banquetas altas para 4 personas cada una (16 puestos totales), mesón de apoyo para el servicio gastronómico, centros de mesa florales naturales y 4 unidades de postes ordenadores de 2 metros en color negro. 
+Incluye personal de servicio para hospitalidad y coordinador/a de evento a cargo del espacio de manera permanente.</textarea>
                     <div class="card-price" style="border: none; padding: 0; margin-top: 5px;">USD 1.800 <small>+ IVA (ambos días)</small></div>
                 </div>
             </div>
@@ -420,8 +482,11 @@
     </div>
 </div>
 
+<div id="image-viewer" class="zoom-overlay" onclick="closeZoom()">
+    <img id="viewer-img" class="zoom-img" alt="Vista Ampliada">
+</div>
+
 <script>
-    // Configuración para los ítems con cantidades
     let seleccionesCantidad = {
         porticoA: { cantidad: 0, precio: 3800, nombre: "Pórtico 360°" },
         porticoB: { cantidad: 0, precio: 2800, nombre: "Pórtico 1 cara" },
@@ -430,11 +495,23 @@
         totemCarga: { cantidad: 0, precio: 600, nombre: "Tótem de Carga" }
     };
 
-    // Configuración para los ítems fijos (Gastronomía y Mobiliario)
     let seleccionesFijas = {
         gastronomia: { precio: 4000, nombre: "Gastronomía (Coffee Break)" },
         mobiliario: { precio: 1800, nombre: "Mobiliario y Staff" }
     };
+
+    // Funciones para Expandir y Contraer Imágenes con Doble Clic
+    function zoomImage(element) {
+        const viewer = document.getElementById('image-viewer');
+        const viewerImg = document.getElementById('viewer-img');
+        viewerImg.src = element.src;
+        viewer.classList.add('show');
+    }
+
+    function closeZoom() {
+        const viewer = document.getElementById('image-viewer');
+        viewer.classList.remove('show');
+    }
 
     function updateQuantity(id) {
         const select = document.getElementById(id);
@@ -455,8 +532,7 @@
     function toggleCheckbox(id) {
         const checkbox = document.getElementById(id);
         
-        // Invertimos estado si hicieron click en la tarjeta y no directo en el check
-        if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'A' && event.target.tagName !== 'LI' && event.target.tagName !== 'STRONG') {
+        if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
             checkbox.checked = !checkbox.checked;
         }
 
@@ -470,12 +546,17 @@
         calcularTotal();
     }
 
+    function updateName(id) {
+        const inputTitulo = document.getElementById('title-' + id).value;
+        seleccionesFijas[id].nombre = inputTitulo.length > 30 ? inputTitulo.substring(0, 27) + '...' : inputTitulo;
+        calcularTotal();
+    }
+
     function calcularTotal() {
         let total = 0;
         let htmlDesglose = '';
         let tieneElementos = false;
 
-        // 1. Sumar elementos con cantidad
         for (let llave in seleccionesCantidad) {
             let item = seleccionesCantidad[llave];
             if (item.cantidad > 0) {
@@ -490,7 +571,6 @@
             }
         }
 
-        // 2. Sumar elementos fijos (con checkbox)
         for (let llave in seleccionesFijas) {
             let item = seleccionesFijas[llave];
             let checkbox = document.getElementById(llave);
